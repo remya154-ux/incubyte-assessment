@@ -2,7 +2,7 @@ import unittest
 import json
 
 from app import create_app
-from models import db
+from app.models import db, Employee
 from config import TestConfig
 
 
@@ -13,14 +13,14 @@ class EmployeeTestCase(unittest.TestCase):
         self.app = create_app(TestConfig)
         self.client = self.app.test_client()
 
-        with self.app.app_context():
-            db.create_all()
+        self.ctx = self.app.app_context()
+        self.ctx.push()
+        db.create_all()
 
     def tearDown(self):
-
-        with self.app.app_context():
-            db.session.remove()
-            db.drop_all()
+        db.session.remove()
+        db.drop_all()
+        self.ctx.pop()
 
     # CREATE TEST
     def test_create_employee(self):
@@ -36,6 +36,9 @@ class EmployeeTestCase(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 201)
+        emp = Employee.query.filter_by(name="John").first()
+        self.assertIsNotNone(emp)
+        self.assertEqual(emp.name, "John")
 
     # READ ALL
     def test_get_employees(self):

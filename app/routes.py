@@ -1,15 +1,7 @@
-from flask import Flask, request, jsonify
-from models import db, Employee
-from config import Config
+from flask import current_app as app, request, jsonify
+from app.models import db, Employee
 
-def create_app(config_class=Config):
-    app = Flask(__name__)
-    app.config.from_object(config_class)
-    db.init_app(app)
-
-    with app.app_context():
-        db.create_all()
-
+def init_app(app):
     # CRUD endpoints
     # Create employee
     @app.route('/employees', methods=['POST'])
@@ -59,4 +51,3 @@ def create_app(config_class=Config):
         db.session.commit()
         return jsonify({"message": "Deleted"}), 200
 
-    return app
