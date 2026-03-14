@@ -51,3 +51,16 @@ def init_app(app):
         db.session.commit()
         return jsonify({"message": "Deleted"}), 200
 
+    # Salary endpoint
+    @app.route('/salary/<int:id>', methods=['GET'])
+    def calculate_net_salary(id):
+        employee = Employee.query.get_or_404(id)
+
+        emp_gross_salary = employee.salary
+        net_salary = emp_gross_salary
+
+        if employee.country == 'USA':
+            net_salary = emp_gross_salary - 0.12 * emp_gross_salary
+        elif employee.country == 'India':
+            net_salary = emp_gross_salary - 0.1 * emp_gross_salary
+        return jsonify({"net_salary": net_salary})
