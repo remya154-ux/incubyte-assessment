@@ -84,3 +84,20 @@ def init_app(app):
             "max_salary": stats.max_salary,
             "avg_salary": round(stats.avg_salary, 2)
         })
+
+    # Endpoint: average salary by job title
+    @app.route('/average_salary/<string:job_title>', methods=['GET'])
+    def average_salary(job_title):
+
+        avg_salary = db.session.query(
+            func.avg(Employee.salary)
+        ).filter(Employee.job_title == job_title).scalar()
+
+        if avg_salary is None:
+            return jsonify({"error": "No employees found for this job title"}), 404
+
+        return jsonify({
+            "job_title": job_title,
+            "average_salary": round(avg_salary, 2)
+        })
+

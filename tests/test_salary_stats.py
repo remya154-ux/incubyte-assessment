@@ -58,6 +58,14 @@ class SalaryStats(unittest.TestCase):
         self.assertEqual(data["job_title"], "Tester")
         self.assertEqual(data["average_salary"], 60000.0)
 
+    def test_job_title_not_found(self):
+        response = self.client.get('/average_salary/Doctor')
+
+        self.assertEqual(response.status_code, 404)
+        data = response.get_json()
+
+        self.assertEqual(data["error"], "No employees found for this job title")
+
 
 if __name__ == '__main__':
     unittest.main()
