@@ -15,9 +15,9 @@ class SalaryStats(unittest.TestCase):
         # Add test employees
         db.session.add(Employee(id=1, name="John", job_title="Tester", salary=50000, country='USA'))
         db.session.add(Employee(id=2, name="Steven", job_title="Tester", salary=100000, country='USA'))
-        db.session.add(Employee(id=3, name="Chris", job_title="Tester", salary=75000, country='USA'))
+        db.session.add(Employee(id=3, name="Chris", job_title="Developer", salary=75000, country='USA'))
         db.session.add(Employee(id=4, name="Bob", job_title="Tester", salary=30000, country='India'))
-        db.session.add(Employee(id=5, name="Mary", job_title="Tester", salary=50000, country='India'))
+        db.session.add(Employee(id=5, name="Mary", job_title="Manager", salary=50000, country='India'))
         db.session.commit()
 
     def tearDown(self):
@@ -48,6 +48,15 @@ class SalaryStats(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         data = response.json
         self.assertEqual(data['error'], "No employees found in this country")
+
+    def test_average_salary_tester(self):
+        response = self.client.get('/average_salary/Tester')
+
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+
+        self.assertEqual(data["job_title"], "Tester")
+        self.assertEqual(data["average_salary"], 60000.0)
 
 
 if __name__ == '__main__':
