@@ -1,5 +1,6 @@
 from flask import current_app as app, request, jsonify
 from app.models import db, Employee
+from sqlalchemy import func
 
 def init_app(app):
     # CRUD endpoints
@@ -64,3 +65,22 @@ def init_app(app):
         elif employee.country == 'India':
             net_salary = emp_gross_salary - 0.1 * emp_gross_salary
         return jsonify({"net_salary": net_salary})
+
+    # salary stats endpoints
+    @app.route('/salary_stats/<string:country>', methods=['GET'])
+    def salary_stats(country):
+        stats = db.session.query(
+            func.min(Employee.salary).label('min_salary'),
+            func.max(Employee.salary).label('max_salary'),
+            func.avg(Employee.salary).label('avg_salary')
+        ).filter(Employee.country == country).first()
+
+        if stats.min_salary is None:
+            return jsonify({"error": "No employees found in this country"}), 404
+
+        return jsonify({
+            "country": country,
+            "min_salary": stats.min_salary,
+            "max_salary": stats.max_salary,
+            "avg_salary": round(stats.avg_salary, 2)
+        })

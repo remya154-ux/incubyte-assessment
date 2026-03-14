@@ -43,6 +43,12 @@ class SalaryStats(unittest.TestCase):
         self.assertEqual(data['max_salary'], 50000)
         self.assertEqual(data['avg_salary'], 40000.0)
 
+    def test_salary_stats_no_employees(self):
+        response = self.client.get('/salary_stats/Germany')
+        self.assertEqual(response.status_code, 404)
+        data = response.json
+        self.assertEqual(data['error'], "No employees found in this country")
+
 
 if __name__ == '__main__':
     unittest.main()
