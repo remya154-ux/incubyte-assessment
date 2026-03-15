@@ -17,7 +17,7 @@ A simple REST API built using **Flask** and **SQLite** for managing employee dat
 
 ```
 incubyte-assessment/
-├── app/            # Unit tests
+├── app/            # Logic Implementation
 │   └── models.py   # Database models
     └── routes.py   # APIs
 ├── app.py            # Main Flask application
@@ -28,7 +28,7 @@ incubyte-assessment/
     └── test_models.py
     └── test_salary_stats.py
 └── README.md
-└── requirements.txt
+└── requirements.txt  # Package Dependencies
 ```
 
 ---
